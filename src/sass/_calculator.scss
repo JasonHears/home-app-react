@@ -1,0 +1,77 @@
+.calculator-input > h2 {
+  font-size: large;
+  color: $color-dark-gray-2;
+}
+
+.calculator-input {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  .row {
+    margin-top: 1rem;
+  }
+}
+
+.calculator-display {
+  border-radius: 12px;
+  background-color: #f8debd;
+  overflow: hidden;
+}
+
+.calculator-display__amount {
+  margin: 0;
+  font-family: SFUIDisplay;
+  font-size: 3rem;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: $color-dark-gray-1;
+}
+
+.calculator-display__label {
+  margin: 0.3rem;
+  font-family: SFUIDisplay;
+  font-size: 1.2rem;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: $color-dark-gray-1;
+}
+
+.calculator-controls {
+  margin-bottom: 2rem;
+  padding: 0.5rem 0;
+}
+
+.calculator-controls__label {
+  color: $color-light-gray-3;
+  display: block;
+  margin: 1.5rem 0 0.5rem;
+}
+.calculator-controls__row {
+}
+
+.calculator-controls__row > .btn-check:checked + .btn {
+  color: $color-white;
+}
+
+.calculator-controls__row > .calculator-controls__btn {
+  color: gray;
+  border-color: gray;
+}
+
+.calculator-controls__row > .btn-check:hover + .btn {
+  color: $color-light-gray-1;
+  border-color: $color-light-gray-1;
+}
+
+.form-switch > label {
+  color: $color-light-gray-3;
+  font-size: 0.7rem;
+  vertical-align: middle;
+}
