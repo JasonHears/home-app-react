@@ -1,20 +1,11 @@
-import FormMortgageCalculator from "./components/FormMortgageCalculator";
+import { useState } from "react";
+
 import Nav from "./components/Nav";
+import FormMortgageCalculator from "./components/FormMortgageCalculator";
 import CalculatorControls from "./components/CalcControls";
 import CalcDisplay from "./components/CalcDisplay";
-import { useState } from "react";
-import {
-  calculatePayment,
-  calculateLoanAmount,
-  isCalculatorValid,
-} from "./helpers/calculator";
-import {
-  TOGGLE_CALC_TYPE,
-  TOGGLE_PROPERTY_TAX,
-  TOGGLE_INSURANCE,
-  TOGGLE_PMI,
-  CALC_TYPE_MONTHLY,
-} from "./helpers/config";
+
+import { CALC_TYPE_MONTHLY } from "./helpers/config";
 
 export default function App() {
   const [calculator, setCalculator] = useState({
@@ -28,35 +19,21 @@ export default function App() {
     down: "",
   });
 
-  const [displayTotal, setDisplayTotal] = useState("--");
-  const [displayLabel, setDisplayLabel] = useState("Enter your information.");
+  const [toggleCalcType, setToggleCalcType] = useState(CALC_TYPE_MONTHLY);
+  const [togglePropertyTax, setTogglePropertyTax] = useState(false);
+  const [toggleInsurance, setToggleInsurance] = useState(false);
+  const [togglePMI, setTogglePMI] = useState(false);
 
-  const initControl = {};
-  initControl[TOGGLE_CALC_TYPE] = CALC_TYPE_MONTHLY;
-  initControl[TOGGLE_PROPERTY_TAX] = false;
-  initControl[TOGGLE_INSURANCE] = false;
-  initControl[TOGGLE_PMI] = false;
-
-  const [controls, setControls] = useState(initControl);
-
-  function handleUpdateCalculator(calcUpdate) {
-    setCalculator(calcUpdate);
-
-    if (!isCalculatorValid(calcUpdate, controls)) return;
-
-    // calculate & update
-    // TODO: payment vs loan amount
-    const newCalc =
-      controls[TOGGLE_CALC_TYPE] === CALC_TYPE_MONTHLY
-        ? calculatePayment(calcUpdate, controls)
-        : calculateLoanAmount(calcUpdate, controls);
-    setDisplayTotal(newCalc);
-
-    setDisplayLabel(
-      controls[TOGGLE_CALC_TYPE] === CALC_TYPE_MONTHLY
-        ? "Estimated Monthly Payment"
-        : "Estimated Loan Amount"
-    );
+  /**
+   * Used to handle updating toggle state in a single function used as props
+   * @param {String} toggle name of the state variable to update
+   * @param {boolean} value new value to set
+   */
+  function handleChangeControl(toggle, value) {
+    if (toggle === "calcType") setToggleCalcType(value);
+    if (toggle === "tax") setTogglePropertyTax(value);
+    if (toggle === "insurance") setToggleInsurance(value);
+    if (toggle === "pmi") setTogglePMI(value);
   }
 
   return (
@@ -66,16 +43,32 @@ export default function App() {
 
       <div className="panel-box gray">
         <h2>Mortgage Calculator</h2>
-        <CalcDisplay total={displayTotal} label={displayLabel} />
+        <CalcDisplay
+          calculator={calculator}
+          calcTypeToggle={toggleCalcType}
+          taxToggle={togglePropertyTax}
+          insuranceToggle={toggleInsurance}
+          pmiToggle={togglePMI}
+        />
         <hr />
-        <CalculatorControls />
+        <CalculatorControls
+          calcTypeToggle={toggleCalcType}
+          taxToggle={togglePropertyTax}
+          insuranceToggle={toggleInsurance}
+          pmiToggle={togglePMI}
+          onChangeControl={handleChangeControl}
+        />
       </div>
 
       <div className="panel-box">
         <h2>Calculator Input</h2>
         <FormMortgageCalculator
           calculator={calculator}
-          onUpdateCalc={handleUpdateCalculator}
+          calcTypeToggle={toggleCalcType}
+          taxToggle={togglePropertyTax}
+          insuranceToggle={toggleInsurance}
+          pmiToggle={togglePMI}
+          onUpdateCalc={setCalculator}
         />
       </div>
 

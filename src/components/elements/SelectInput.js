@@ -10,12 +10,11 @@ export default function SelectInput({
       <label>{label}</label>
       <select
         className="calculator-field form-select form-select-lg"
-        value={value}
+        value={preset ? preset : value}
         onChange={onChange}
-        defaultValue=""
       >
         {preset && (
-          <option value="" disabled>
+          <option value={preset} disabled>
             {preset}
           </option>
         )}

@@ -1,27 +1,43 @@
 import ToggleButton from "./elements/ToggleButton";
-export default function CalculatorControls() {
+
+export default function CalculatorControls({
+  calcTypeToggle,
+  taxToggle,
+  insuranceToggle,
+  pmiToggle,
+  onChangeControl,
+}) {
   return (
     <>
       <ToggleButton
-        label="Monthly Payment vs Loan Amount"
-        state1="Monthly Payment"
-        state2="Loan Amount"
-        value="Monthly Payment"
+        label="Which do you want to calculate?"
+        stateOff="Monthly Payment"
+        stateOn="Loan Amount"
+        value={calcTypeToggle}
+        onChange={(toggleVal) => onChangeControl("calcType", toggleVal)}
       />
 
       <ToggleButton
-        label="Include Annual Property Tax"
-        state1="No"
-        state2="Yes"
-        value="No"
+        label="Include Annual Property Tax?"
+        stateOff="No"
+        stateOn="Yes"
+        value={taxToggle}
+        onChange={(toggleVal) => onChangeControl("tax", toggleVal)}
       />
       <ToggleButton
-        label="Include Annual Insurance"
-        state1="No"
-        state2="Yes"
-        value="No"
+        label="Include Annual Insurance?"
+        stateOff="No"
+        stateOn="Yes"
+        value={insuranceToggle}
+        onChange={(toggleVal) => onChangeControl("insurance", toggleVal)}
       />
-      <ToggleButton label="Include PMI" state1="No" state2="Yes" value="No" />
+      <ToggleButton
+        label="Include PMI?"
+        stateOff="No"
+        stateOn="Yes"
+        value={pmiToggle}
+        onChange={(toggleVal) => onChangeControl("pmi", toggleVal)}
+      />
     </>
   );
 }

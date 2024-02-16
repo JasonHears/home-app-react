@@ -1,11 +1,19 @@
 import { useState } from "react";
 
-export default function ToggleButton({ label, state1, state2, value }) {
+export default function ToggleButton({
+  label,
+  stateOff,
+  stateOn,
+  value,
+  onChange,
+}) {
   const id = crypto.randomUUID().slice(0, 8);
   const [selected, setSelected] = useState(value);
 
   function handleChange(e) {
-    setSelected(e.target.value);
+    const boolVal = e.target.value === "true";
+    setSelected(boolVal);
+    onChange(boolVal);
   }
 
   return (
@@ -15,32 +23,32 @@ export default function ToggleButton({ label, state1, state2, value }) {
         type="radio"
         className="btn-check calculation-type__switch"
         name={id}
-        id={`${id}-${state1}`}
+        id={`${id}-${stateOff}`}
         onChange={handleChange}
-        value={state1}
-        checked={selected === state1}
+        value={false}
+        checked={selected === false}
       />
       <label
         className="btn calculator-controls__btn"
-        htmlFor={`${id}-${state1}`}
+        htmlFor={`${id}-${stateOff}`}
       >
-        {state1}
+        {stateOff}
       </label>
 
       <input
         type="radio"
         name={id}
         className="btn-check calculation-type__switch"
-        id={`${id}-${state2}`}
+        id={`${id}-${stateOn}`}
         onChange={handleChange}
-        value={state2}
-        checked={selected === state2}
+        value={true}
+        checked={selected === true}
       />
       <label
         className="btn calculator-controls__btn"
-        htmlFor={`${id}-${state2}`}
+        htmlFor={`${id}-${stateOn}`}
       >
-        {state2}
+        {stateOn}
       </label>
     </div>
   );

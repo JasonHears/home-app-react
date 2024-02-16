@@ -47,9 +47,18 @@ const _calculateAmountPMI = function (loanAmt, downPayment, termYears) {
 
 /**
  * Calculates the monthly payment based on loan amount
- * @returns {Number} Result of calculation for monthly payment
+ * @param {Object} calc calculator object
+ * @param {boolean} togglePropertyTax
+ * @param {boolean} toggleInsurance
+ * @param {boolean} togglePMI
+ * @returns {Number} Non-negative/zero amount of calculation for loan amount or "--"
  */
-export const calculatePayment = function (calc, controls) {
+export const calculatePayment = function (
+  calc,
+  togglePropertyTax,
+  toggleInsurance,
+  togglePMI
+) {
   const interest = calc.interest / 100 / 12;
   const numPayments = calc.termYears * 12;
 
@@ -60,30 +69,39 @@ export const calculatePayment = function (calc, controls) {
   let result = roundMoney(calc.loan / discountFactor);
 
   // Property Tax Inclusion
-  if (controls?.[config.TOGGLE_PROPERTY_TAX] && calc.tax !== 0) {
+  if (togglePropertyTax && calc.tax > 0) {
     result += calc.tax / 12;
   }
 
   // Property Insurance Inclusion
-  if (controls?.[config.TOGGLE_INSURANCE] && calc.insurance !== 0) {
+  if (toggleInsurance && calc.insurance > 0) {
     result += calc.insurance / 12;
   }
 
   // PMI Inclusion
-  if (controls?.[config.TOGGLE_PMI] && calc.down !== 0) {
+  if (togglePMI && calc.down > 0) {
     const monthlyPMI = _calculateMonthlyPMI(calc.loan, calc.down);
     result += monthlyPMI;
   }
 
   console.log("result payment: ", result);
-  return result;
+  return result > 0 ? result : "--";
 };
 
 /**
  * Calculates the maximum loan amount based on monthly payment
- * @returns {Number} Result of calculation for loan amount
+ * @param {Object} calc calculator object
+ * @param {boolean} togglePropertyTax
+ * @param {boolean} toggleInsurance
+ * @param {boolean} togglePMI
+ * @returns {Number, String} Non-negative/zero amount of calculation for loan amount or "--"
  */
-export const calculateLoanAmount = function (calc, controls) {
+export const calculateLoanAmount = function (
+  calc,
+  togglePropertyTax,
+  toggleInsurance,
+  togglePMI
+) {
   const interest = calc.interest / 100 / 12;
   const numPayments = calc.termYears * 12;
 
@@ -94,40 +112,40 @@ export const calculateLoanAmount = function (calc, controls) {
   let adjustedPayment = calc.payment;
 
   // Property Tax Inclusion
-  if (controls?.[config.TOGGLE_PROPERTY_TAX] && calc.tax !== 0) {
+  if (togglePropertyTax && calc.tax > 0) {
     adjustedPayment -= calc.tax / 12;
   }
 
   // Property Insurance Inclusion
-  if (controls?.[config.TOGGLE_INSURANCE] && calc.insurance !== 0) {
+  if (toggleInsurance && calc.insurance > 0) {
     adjustedPayment -= calc.insurance / 12;
   }
 
   let result = roundMoney(adjustedPayment * discountFactor); // current loan amount
 
   // PMI Inclusion
-  if (controls?.[config.TOGGLE_PMI] && calc.down !== 0) {
+  if (togglePMI && calc.down > 0) {
     const totalPMICost = _calculateAmountPMI(result, calc.down, calc.termYears);
     result -= totalPMICost;
   }
 
   console.log("result loan: ", result);
-  return result;
+  return result > 0 ? result : "??";
 };
 
 /**
  * Returns whether or not calculator has valid inputs to run against
+ * @param {Object} calc calculator object
+ * @param {boolean} calcTypeToggle
  * @returns {boolean} true if calculator is valid, false if not
  */
-export const isCalculatorValid = function (calc, controls) {
+export const isCalculatorValid = function (calc, calcTypeToggle) {
   return (
     // validate interest and termYears are > 0
     calc.interest > 0 &&
     calc.termYears > 0 &&
     // validate loan amount or payment is > 0 based on calculation type
-    ((controls?.[config.TOGGLE_CALC_TYPE] === config.CALC_TYPE_MONTHLY &&
-      calc.loan > 0) ||
-      (controls?.[config.TOGGLE_CALC_TYPE] === config.CALC_TYPE_AMOUNT &&
-        calc.payment > 0))
+    ((calcTypeToggle === config.CALC_TYPE_MONTHLY && calc.loan > 0) ||
+      (calcTypeToggle === config.CALC_TYPE_AMOUNT && calc.payment > 0))
   );
 };
